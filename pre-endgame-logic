@@ -1,0 +1,84 @@
+#Project Title: Python Tic Tac Toe
+
+#pip install pygame on cmd
+
+
+#importing libraries
+import pygame
+from pygame.locals import *
+pygame.init()
+
+#setup game window
+width = 300 #300 pixels
+height = 300 #300 pixels
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption('TicTacToe')
+
+
+#define variables
+line_width = 6
+markers=[]
+clicked = False
+pos = []
+player = 1
+
+
+#define colours
+green = (0, 255, 0)
+red = (255, 0, 0)
+
+#drawing game grid
+def draw_grid():
+    bg = (255, 255, 200)
+    grid = (50, 50, 50)
+    screen.fill(bg)
+    for x in range(1,3):
+        pygame.draw.line(screen, grid, (0, x * 100), (width, x*100), line_width) #horizontal lines
+        pygame.draw.line(screen, grid, (x * 100, 0), (x * 100, height), line_width)  #vertical lines
+
+#list to store game data
+for x in range(3):
+    row = [0] * 3
+    markers.append(row)
+
+#print(markers)
+
+def draw_markers():
+    x_pos = 0
+    for x in markers:
+        y_pos = 0
+        for y in x:
+            if y == 1: #player 1
+                pygame.draw.line(screen, green, (x_pos *100 + 15, y_pos * 100 + 15), (x_pos * 100 + 85, y_pos * 100 + 85), line_width) #start point top left to bottom right
+                pygame.draw.line(screen, green, (x_pos * 100 + 15, y_pos * 100 + 85), (x_pos * 100 + 85, y_pos * 100 + 15), line_width)
+            if y == -1:
+                pygame.draw.circle(screen, red, (x_pos * 100 + 50, y_pos * 100 + 50), 38, line_width)
+            y_pos += 1
+        x_pos += 1
+
+#create a game loop with exit option
+run = True #run is always true
+while run:
+
+    draw_grid()
+    draw_markers()
+
+    #add event handlers
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+    #detect click of mouse
+        if event.type == pygame.MOUSEBUTTONDOWN and clicked == False:
+            clicked = True
+        if event.type == pygame.MOUSEBUTTONUP and clicked == True:
+            clicked = False
+            pos = pygame.mouse.get_pos()
+            #extract x and y positions
+            cell_x = pos[0]
+            cell_y = pos[1]
+            if markers[cell_x // 100][cell_y // 100] == 0: #nothing is clicked yet
+                markers[cell_x // 100][cell_y // 100] = player
+                player *= -1 #flip player each time
+    pygame.display.update()
+#quit pygame
+pygame.quit()
